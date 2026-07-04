@@ -21,6 +21,7 @@ func New[T any](ctx context.Context, ttl time.Duration) *Cache[T] {
 		TTL: ttl,
 	}
 
+	// TTL time ticker to cleanup expired items
 	go c.cleanUp(ctx)
 
 	return c
