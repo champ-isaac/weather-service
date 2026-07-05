@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 var (
@@ -15,7 +16,7 @@ var (
 	feature      = "forecast_temperature_qv"
 	pointsUrl    = "https://api.weather.gov/points/%f,%f"
 	forecastUrl  = "https://api.weather.gov/gridpoints/%s/%d,%d/forecast"
-	errorRespFmt = "statusCode: %d, reason: %s, details: %s"
+	errorRespFmt = "{\"statusCode\": %d, \"reason\": \"%s\", \"details\": \"%s\"}"
 )
 
 type Client struct {
@@ -28,9 +29,14 @@ func New() *Client {
 	}
 }
 
-func (c *Client) Forecast(lat, lng float64, units string) (any, error) {
+func (c *Client) Forecast(latitude, longitude, units string) (*ForecastResponse, error) {
 	var resp any
 	var err error
+	lat, err := strconv.ParseFloat(latitude, 64)
+	lng, err := strconv.ParseFloat(longitude, 64)
+	if err != nil {
+		return nil, fmt.Errorf("could not parse latitude or longitude: %w", err)
+	}
 	resp, err = c.getPoints(lat, lng)
 	if err != nil {
 		return nil, err
@@ -96,11 +102,7 @@ func (c *Client) getPoints(lat, lng float64) (any, error) {
 	if resp, err = c.do(fmt.Sprintf(pointsUrl, lat, lng), false, ""); err != nil {
 		return nil, err
 	}
-	defer func() {
-		if err = resp.Body.Close(); err != nil {
-			log.Printf("error closing response body: %v", err)
-		}
-	}()
+	defer c.close(resp)
 
 	var bs []byte
 
@@ -127,11 +129,8 @@ func (c *Client) getForecast(officeId string, gridX, gridY int, units string) (a
 	if resp, err = c.do(fmt.Sprintf(forecastUrl, officeId, gridX, gridY), true, units); err != nil {
 		return nil, err
 	}
-	defer func() {
-		if err = resp.Body.Close(); err != nil {
-			log.Printf("error closing response body: %v", err)
-		}
-	}()
+	defer c.close(resp)
+
 	var bs []byte
 	bs, err = io.ReadAll(resp.Body)
 	if err != nil {
@@ -147,6 +146,13 @@ func (c *Client) getForecast(officeId string, gridX, gridY int, units string) (a
 		return nil, fmt.Errorf("error unmarshalling response body: %w", err)
 	}
 	return &f, nil
+}
+
+func (c *Client) close(resp *http.Response) {
+	err := resp.Body.Close()
+	if err != nil {
+		log.Printf("error closing response body: %v", err)
+	}
 }
 
 func (c *Client) unmarshalErrorResponse(bs []byte) (*ErrorResponse, error) {

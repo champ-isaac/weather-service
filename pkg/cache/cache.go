@@ -2,6 +2,7 @@ package cache
 
 import (
 	"context"
+	"log"
 	"sync"
 	"time"
 )
@@ -64,6 +65,7 @@ func (c *Cache[T]) cleanUp(ctx context.Context) {
 			c.m.Range(func(k, v any) bool {
 				item := v.(Item[T])
 				if now.After(item.ExpiredAt) {
+					log.Println("delete key:", k.(string))
 					c.m.Delete(k)
 				}
 				return true
