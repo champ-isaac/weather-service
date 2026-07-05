@@ -16,83 +16,43 @@ type ErrorResponse struct {
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 type PointsResponse struct {
-	Id                  string           `json:"@id"`
-	Type                string           `json:"@type"`
-	Cwa                 string           `json:"cwa"`
-	Type1               string           `json:"type"`
-	ForecastOffice      string           `json:"forecastOffice"`
-	GridId              string           `json:"gridId"`
-	GridX               int              `json:"gridX"`
-	GridY               int              `json:"gridY"`
-	Forecast            string           `json:"forecast"`
-	ForecastHourly      string           `json:"forecastHourly"`
-	ForecastGridData    string           `json:"forecastGridData"`
-	ObservationStations string           `json:"observationStations"`
-	RelativeLocation    RelativeLocation `json:"relativeLocation"`
-	ForecastZone        string           `json:"forecastZone"`
-	County              string           `json:"county"`
-	FireWeatherZone     string           `json:"fireWeatherZone"`
-	TimeZone            string           `json:"timeZone"`
-	RadarStation        string           `json:"radarStation"`
-	AstronomicalData    AstronomicalData `json:"astronomicalData"`
-	Nwr                 Nwr              `json:"nwr"`
-	Context             []string         `json:"@context"`
-	Geometry            string           `json:"geometry"`
+	Id               string           `json:"@id"`
+	Type             string           `json:"@type"`
+	ForecastOffice   string           `json:"forecastOffice"`
+	GridId           string           `json:"gridId"`
+	GridX            int              `json:"gridX"`
+	GridY            int              `json:"gridY"`
+	Forecast         string           `json:"forecast"`
+	ForecastHourly   string           `json:"forecastHourly"`
+	ForecastGridData string           `json:"forecastGridData"`
+	RelativeLocation RelativeLocation `json:"relativeLocation"`
+	TimeZone         string           `json:"timeZone"`
+	RadarStation     string           `json:"radarStation"`
+	Geometry         string           `json:"geometry"`
 }
+
 type RelativeLocation struct {
-	Context    []string `json:"@context"`
-	Id         string   `json:"id"`
-	Type       string   `json:"type"`
-	Geometry   Geometry `json:"geometry"`
-	Properties `json:"properties"`
-}
-type Geometry struct {
-	Type        string `json:"type"`
-	Coordinates []int  `json:"coordinates"`
-	Bbox        []int  `json:"bbox"`
-}
-type Properties struct {
 	City     string   `json:"city"`
 	State    string   `json:"state"`
+	Geometry string   `json:"geometry"`
 	Distance Distance `json:"distance"`
 	Bearing  Bearing  `json:"bearing"`
 }
+
 type Distance struct {
-	Value          int    `json:"value"`
-	MaxValue       int    `json:"maxValue"`
-	MinValue       int    `json:"minValue"`
-	UnitCode       string `json:"unitCode"`
-	QualityControl string `json:"qualityControl"`
+	UnitCode string  `json:"unitCode"`
+	Value    float64 `json:"value"`
 }
+
 type Bearing struct {
-	Value          int    `json:"value"`
-	MaxValue       int    `json:"maxValue"`
-	MinValue       int    `json:"minValue"`
-	UnitCode       string `json:"unitCode"`
-	QualityControl string `json:"qualityControl"`
-}
-type AstronomicalData struct {
-	Sunrise                   time.Time `json:"sunrise"`
-	Sunset                    time.Time `json:"sunset"`
-	Transit                   time.Time `json:"transit"`
-	CivilTwilightBegin        time.Time `json:"civilTwilightBegin"`
-	CivilTwilightEnd          time.Time `json:"civilTwilightEnd"`
-	NauticalTwilightBegin     time.Time `json:"nauticalTwilightBegin"`
-	NauticalTwilightEnd       time.Time `json:"nauticalTwilightEnd"`
-	AstronomicalTwilightBegin time.Time `json:"astronomicalTwilightBegin"`
-	AstronomicalTwilightEnd   time.Time `json:"astronomicalTwilightEnd"`
-}
-type Nwr struct {
-	Transmitter    string `json:"transmitter"`
-	SameCode       string `json:"sameCode"`
-	AreaBroadcast  string `json:"areaBroadcast"`
-	PointBroadcast string `json:"pointBroadcast"`
+	UnitCode string `json:"unitCode"`
+	Value    int    `json:"value"`
 }
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 type ForecastResponse struct {
-	Context           Context   `json:"@context"`
+	Context           any       `json:"@context"`
 	Geometry          string    `json:"geometry"`
 	Units             string    `json:"units"`
 	ForecastGenerator string    `json:"forecastGenerator"`
@@ -101,14 +61,6 @@ type ForecastResponse struct {
 	ValidTimes        string    `json:"validTimes"`
 	Elevation         Elevation `json:"elevation"`
 	Periods           []Period  `json:"periods"`
-}
-
-type Context struct {
-	Version string `json:"@version"`
-	Wx      string `json:"wx"`
-	Geo     string `json:"geo"`
-	Unit    string `json:"unit"`
-	Vocab   string `json:"@vocab"`
 }
 
 type Elevation struct {
