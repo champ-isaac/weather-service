@@ -48,13 +48,14 @@ func (c *Client) Forecast(latitude, longitude, units string) (*ForecastResponse,
 	case *ErrorResponse:
 		// got the error response
 		errorResponse = resp.(*ErrorResponse)
+		return nil, fmt.Errorf(errorRespFmt, errorResponse.Status, errorResponse.Title, errorResponse.Detail)
 	case *PointsResponse:
 		// got the points response
 		pointsResponse = resp.(*PointsResponse)
 	}
-	if errorResponse != nil {
-		return nil, fmt.Errorf(errorRespFmt, errorResponse.Status, errorResponse.Title, errorResponse.Detail)
-	}
+	//if errorResponse != nil {
+	//
+	//}
 
 	resp, err = c.getForecast(pointsResponse.GridId, pointsResponse.GridX, pointsResponse.GridY, units)
 	if err != nil {
@@ -64,12 +65,13 @@ func (c *Client) Forecast(latitude, longitude, units string) (*ForecastResponse,
 	switch resp.(type) {
 	case *ErrorResponse:
 		errorResponse = resp.(*ErrorResponse)
+		return nil, fmt.Errorf(errorRespFmt, errorResponse.Status, errorResponse.Title, errorResponse.Detail)
 	case *ForecastResponse:
 		forecastResponse = resp.(*ForecastResponse)
 	}
-	if errorResponse != nil {
-		return nil, fmt.Errorf(errorRespFmt, errorResponse.Status, errorResponse.Title, errorResponse.Detail)
-	}
+	//if errorResponse != nil {
+	//	return nil, fmt.Errorf(errorRespFmt, errorResponse.Status, errorResponse.Title, errorResponse.Detail)
+	//}
 	return forecastResponse, nil
 }
 

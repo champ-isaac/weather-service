@@ -54,7 +54,7 @@ func TestForecastsRequest_ErrorResponse(t *testing.T) {
 
 func TestClient_Forecast_Success(t *testing.T) {
 	client := New()
-	resp, err := client.Forecast(39.7456, -97.0892, "si")
+	resp, err := client.Forecast("39.7456", "-97.0892", "si")
 	assert.NoError(t, err)
 	assert.NotNil(t, resp)
 	assert.IsType(t, &ForecastResponse{}, resp)
@@ -62,7 +62,7 @@ func TestClient_Forecast_Success(t *testing.T) {
 
 func TestClient_Forecast_ErrorResponse(t *testing.T) {
 	client := New()
-	resp, err := client.Forecast(-97.0892, 39.7456, "si")
+	resp, err := client.Forecast("-97.0892", "39.7456", "si")
 	assert.Error(t, err)
 	assert.Nil(t, resp)
 }
